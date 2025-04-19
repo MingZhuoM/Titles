@@ -56,10 +56,10 @@ public class TitleManager {
     // }
         private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten
     ) {
-        // 1. 检查输入是否为空
-        if (mapToFlatten == null) {
-            return Collections.emptyMap();
-        }
+        // // 1. 检查输入是否为空
+        // if (mapToFlatten == null) {
+        //     return Collections.emptyMap();
+        // }
     
         return mapToFlatten.values().stream()
                 // 2. 过滤掉外层 Map 中的 null 值
