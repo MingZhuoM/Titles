@@ -26,5 +26,5 @@ jobs:
         rm -f ~/.gradle/caches/modules-2/gc.properties
     - uses: actions/upload-artifact@v4
       with:
-        name: mahjongcraft-artifacts-${{ github.run_number }}
+        name: title-1.20.1-${{ github.run_number }}
         path: build/libs
