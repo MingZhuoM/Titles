@@ -49,12 +49,34 @@ public class TitleManager {
         return flatten(holder);
     }
 
-    private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten) {
+    // private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten) {
+    //     return mapToFlatten.values().stream()
+    //             .flatMap(map -> map.entrySet().stream())
+    //             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    // }
+        private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten
+    ) {
+        // 1. 检查输入是否为空
+        if (mapToFlatten == null) {
+            return Collections.emptyMap();
+        }
+    
         return mapToFlatten.values().stream()
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                // 2. 过滤掉外层 Map 中的 null 值
+                .filter(Objects::nonNull)
+                // 3. 过滤掉内层 Map 的 null 值，并展开条目
+                .flatMap(innerMap -> 
+                    innerMap.entrySet().stream()
+                        .filter(entry -> entry.getKey() != null && entry.getValue() != null)
+                )
+                // 4. 处理键冲突
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (oldVal, newVal) -> newVal
+                ));
     }
-
+    
     public static void setDisplayTitle(Player player, ResourceLocation id) {
         doIfPresent(player, cap -> {
             cap.setDisplayTitle(getTitle(id));
