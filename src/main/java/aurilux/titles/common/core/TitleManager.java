@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//
+import java.util.*;
+import java.util.stream.*;
+import java.util.function.Function;
+
+
 public class TitleManager {
     public static void unlockTitle(ServerPlayer player, ResourceLocation titleKey) {
         doIfPresent(player, cap -> {
@@ -54,25 +60,18 @@ public class TitleManager {
     //             .flatMap(map -> map.entrySet().stream())
     //             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     // }
-        private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten
+    private static Map<ResourceLocation, Title> flatten(Map<Title.AwardType, Map<ResourceLocation, Title>> mapToFlatten
     ) {
-        // // 1. 检查输入是否为空
-        // if (mapToFlatten == null) {
-        //     return Collections.emptyMap();
-        // }
-    
+        if (mapToFlatten == null) {
+            return Collections.emptyMap();
+        }
         return mapToFlatten.values().stream()
-                // 2. 过滤掉外层 Map 中的 null 值
-                .filter(Objects::nonNull)
-                // 3. 过滤掉内层 Map 的 null 值，并展开条目
-                .flatMap(innerMap -> 
-                    innerMap.entrySet().stream()
-                        .filter(entry -> entry.getKey() != null && entry.getValue() != null)
-                )
-                // 4. 处理键冲突
+                .filter(Objects::nonNull) // 修复点1：已导入Objects类
+                .flatMap(innerMap -> innerMap.entrySet().stream())
+                .filter(entry -> entry.getKey() != null && entry.getValue() != null)
                 .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue,
+                    entry -> entry.getKey(),  // 修复点2：使用Lambda代替方法引用
+                    entry -> entry.getValue(),
                     (oldVal, newVal) -> newVal
                 ));
     }
